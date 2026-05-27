@@ -36,10 +36,7 @@
         description = "Python project";
       };
       bundlers.${system}.default = drv:
-        pkgs.runCommand "bundled" { } ''
-          cp -r ${drv}/* $out/
-          echo "bundled" > $out/BUNDLED-BY
-        '';
+        pkgs.writeText "bundle.txt" "derivation path: ${drv}\n";
       hydraJobs.${system}.a = pkgs.hello;
     };
 }
