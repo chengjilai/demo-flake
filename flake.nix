@@ -1,7 +1,7 @@
 {
   description = "whatever to describe this flake";
   inputs.nixpkgs.url = "git+ssh://git@github.com/NixOS/nixpkgs.git?ref=nixos-unstable";
-  outputs = { self, nixpkgs }:
+  outputs = { nixpkgs }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -16,10 +16,10 @@
       checks.${system}.a = pkgs.hello;
       devShells.${system}.a = pkgs.mkShellNoCC {
         name = "a";
-        packages = [ pkgs.hello ];
+        packages = [ pkgs.hello pkgs.fish ];
         inputsFrom = [ ];
         shellHook = ''
-          echo "entering shell a" && exec "$SHELL"
+          exec fish
         '';
         FOO = "bar";
       };
