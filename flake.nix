@@ -35,11 +35,7 @@
         path = ./python-starter;
         description = "Python project";
       };
-      bundlers.${system}.default = drv: pkgs.runCommand "${drv.name}-bundled" { } ''
-        mkdir $out
-        cp -r ${drv}/* $out/
-        echo "bundled by flake" > $out/bundled-by
-      '';
+      bundlers.${system}.default = drv: drv;
       hydraJobs.${system}.a = pkgs.hello;
     };
 }
