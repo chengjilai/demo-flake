@@ -2,10 +2,9 @@
   description = "whatever to describe this flake";
   inputs = {
     nixpkgs.url = "git+ssh://git@github.com/NixOS/nixpkgs.git?ref=nixos-unstable";
-    nixbundlers.url = "github:NixOS/bundlers";
   };
   outputs =
-    { nixpkgs, nixbundlers, ... }:
+    { nixpkgs, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -36,7 +35,11 @@
         path = ./python-starter;
         description = "Python project";
       };
-      bundlers.${system}.a = nixbundlers.bundlers.${system}.toBuildDerivation;
+      bundlers.${system}.a = drv: pkgs.runCommand "${drv.name}-bundled" { } ''
+        mkdir $out
+        cp -r ${drv}/* $out/
+        echo "bundled by flake" > $out/bundled-by
+      '';
       hydraJobs.${system}.a = pkgs.hello;
     };
 }
