@@ -38,6 +38,7 @@
       bundlers.${system}.default = drv:
         pkgs.runCommand "bundled" { } ''
           cp -r ${drv}/* $out/
+          echo "bundled" > $out/BUNDLED-BY
         '';
       hydraJobs.${system}.a = pkgs.hello;
     };
