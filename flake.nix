@@ -35,7 +35,7 @@
         path = ./python-starter;
         description = "Python project";
       };
-      bundlers.${system}.a = drv: pkgs.runCommand "${drv.name}-bundled" { } ''
+      bundlers.${system}.default = drv: pkgs.runCommand "${drv.name}-bundled" { } ''
         mkdir $out
         cp -r ${drv}/* $out/
         echo "bundled by flake" > $out/bundled-by
