@@ -1,5 +1,5 @@
 {
-  description = "Demo flake — each standard validated output attribute";
+  description = "Demo flake — arbitrary names replaced with single letters";
 
   inputs.nixpkgs.url = "git+ssh://git@github.com/NixOS/nixpkgs.git?ref=nixos-unstable";
 
@@ -9,43 +9,57 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-      # 1. packages — `nix build .#name`
-      packages.${system}.default = pkgs.hello;
 
-      # 2. apps — `nix run .#name`  (needs type + program)
-      apps.${system}.default = {
-        type = "app";
+      # ▲ 'packages', 'x86_64-linux' are required structure.
+      # ▼ 'a' is an arbitrary name you choose.
+      packages.${system}.a = pkgs.hello;
+
+      # ▲ 'apps', 'x86_64-linux' are required.
+      # ▼ 'a' arbitrary.
+      # ▲ 'type', 'program' keys are required inside the app value.
+      # ▼ the string "whatever" for type, and the program path are arbitrary.
+      apps.${system}.a = {
+        type = "whatever";
         program = "${pkgs.hello}/bin/hello";
-        meta.description = "Say hello";
       };
 
-      # 3. checks — `nix flake check` builds these
-      checks.${system}.hello-builds = pkgs.hello;
+      # ▲ 'checks', 'x86_64-linux' required.
+      # ▼ 'a' arbitrary.
+      checks.${system}.a = pkgs.hello;
 
-      # 4. devShells — `nix develop`
-      devShells.${system}.default = pkgs.mkShellNoCC {
+      # ▲ 'devShells', 'x86_64-linux' required.
+      # ▼ 'a' arbitrary.
+      devShells.${system}.a = pkgs.mkShellNoCC {
         packages = [ pkgs.hello ];
       };
 
-      # 5. formatter — `nix fmt` (single derivation per system)
+      # ▲ 'formatter', 'x86_64-linux' required.
+      # ▼ value is directly a derivation (no extra naming level).
       formatter.${system} = pkgs.hello;
 
-      # 6. overlays — lambda with arg 'final' (or '_')
-      overlays.default = final: prev: { };
+      # ▲ 'overlays' required.
+      # ▼ 'a' arbitrary.
+      overlays.a = final: prev: { };
 
-      # 7. templates — `nix flake init -t` (needs path + description)
-      templates.default = {
+      # ▲ 'templates' required.
+      # ▼ 'a' arbitrary.
+      # ▲ inside: 'path' and 'description' keys are required.
+      # ▼ their values are arbitrary.
+      templates.a = {
         path = ./.;
-        description = "Demo flake template";
+        description = "...";
       };
 
-      # 8. bundlers — `nix bundle` (each is a function)
-      bundlers.${system}.default = drv: drv;
+      # ▲ 'bundlers', 'x86_64-linux' required.
+      # ▼ 'a' arbitrary.
+      bundlers.${system}.a = drv: drv;
 
-      # 9. hydraJobs — Hydra CI (recursive attrsets, leaves are derivations)
-      hydraJobs.${system}.hello = pkgs.hello;
+      # ▲ 'hydraJobs', 'x86_64-linux' required.
+      # ▼ 'a' arbitrary.
+      hydraJobs.${system}.a = pkgs.hello;
 
-      # 10. legacyPackages — like packages but unvalidated per-attribute
+      # ▲ 'legacyPackages', 'x86_64-linux' required.
+      # ▼ value is directly a package set (no extra naming level).
       legacyPackages.${system} = pkgs;
     };
 }
