@@ -35,7 +35,10 @@
         path = ./python-starter;
         description = "Python project";
       };
-      bundlers.${system}.default = drv: drv;
+      bundlers.${system}.default = drv:
+        pkgs.runCommand "bundled" { } ''
+          cp -r ${drv}/* $out/
+        '';
       hydraJobs.${system}.a = pkgs.hello;
     };
 }
