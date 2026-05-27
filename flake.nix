@@ -37,6 +37,19 @@
       };
       bundlers.${system}.foo = drv:
         pkgs.writeText "bundle.txt" "derivation path: ${drv}\n";
-      hydraJobs.${system}.a = pkgs.hello;
+      hydraJobs.${system} = {
+        # one derivations 
+        hello = pkgs.hello;
+        # recursive jobset — leaves are derivations, attrsets are groups
+        checks = {
+          build-hello = pkgs.hello;      #  checks: { build-hello = <drv>; }
+        };
+        packages = {
+          default = pkgs.hello;          #  packages: { default = <drv>; }
+          nested = {
+            hello = pkgs.hello;           #  packages: { nested: { hello = <drv>; } }
+          };
+        };
+      };
     };
 }
