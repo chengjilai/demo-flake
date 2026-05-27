@@ -16,6 +16,7 @@
       apps.${system}.default = {
         type = "app";
         program = "${pkgs.hello}/bin/hello";
+        meta.description = "Say hello";
       };
 
       # 3. checks — `nix flake check` builds these
