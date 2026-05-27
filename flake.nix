@@ -1,69 +1,53 @@
 {
-  description = "Demo flake demonstrating all standard validated output attributes";
+  description = "Demo flake — each standard validated output attribute";
 
   inputs.nixpkgs.url = "git+ssh://git@github.com/NixOS/nixpkgs.git?ref=nixos-unstable";
 
   outputs = { self, nixpkgs }:
     let
-      forAllSystems = nixpkgs.lib.genAttrs nixpkgs.lib.platforms.all;
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-      # 1. packages — buildable package derivations, used by `nix build`
-      packages = forAllSystems (system: {
-        default = nixpkgs.legacyPackages.${system}.hello;
-        hello   = nixpkgs.legacyPackages.${system}.hello;
-      });
+      # 1. packages — `nix build .#name`
+      packages.${system}.default = pkgs.hello;
 
-      # 2. apps — runnable applications, used by `nix run`
-      #    Must have {type, program}. Optional meta.description
-      apps = forAllSystems (system: {
-        default = {
-          type = "app";
-          program = "${nixpkgs.legacyPackages.${system}.hello}/bin/hello";
-          meta.description = "Say hello";
-        };
-      });
+      # 2. apps — `nix run .#name`  (needs type + program)
+      apps.${system}.default = {
+        type = "app";
+        program = "${pkgs.hello}/bin/hello";
+      };
 
-      # 3. checks — tests/verifications, built by `nix flake check`
-      checks = forAllSystems (system: {
-        hello-builds = nixpkgs.legacyPackages.${system}.hello;
-      });
+      # 3. checks — `nix flake check` builds these
+      checks.${system}.hello-builds = pkgs.hello;
 
-      # 4. devShells — development environments, entered via `nix develop`
-      devShells = forAllSystems (system: {
-        default = nixpkgs.legacyPackages.${system}.mkShellNoCC {
-          packages = [ nixpkgs.legacyPackages.${system}.hello ];
-        };
-      });
+      # 4. devShells — `nix develop`
+      devShells.${system}.default = pkgs.mkShellNoCC {
+        packages = [ pkgs.hello ];
+      };
 
-      # 5. formatter — single derivation per system, invoked by `nix fmt`
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.hello);
+      # 5. formatter — `nix fmt` (single derivation per system)
+      formatter.${system} = pkgs.hello;
 
-      # 6. overlays — Nixpkgs overlay functions (lambda with arg 'final')
+      # 6. overlays — lambda with arg 'final' (or '_')
       overlays.default = final: prev: { };
 
-      # 7. nixosModules — NixOS module functions
-      nixosModules.default = { ... }: { };
+      # 7. nixosModules — NixOS module (any value)
+      nixosModules.default = { config, lib, pkgs, ... }: { };
 
-      # 8. templates — project scaffolds, used by `nix flake init -t`
-      #    Must have `path` (existing) and `description` (string)
+      # 8. templates — `nix flake init -t` (needs path + description)
       templates.default = {
         path = ./.;
         description = "Demo flake template";
       };
 
-      # 9. bundlers — create self-contained bundles, used by `nix bundle`
-      #    Each must be a function (lambda)
-      bundlers = forAllSystems (system: {
-        default = drv: drv;
-      });
+      # 9. bundlers — `nix bundle` (each is a function)
+      bundlers.${system}.default = drv: drv;
 
-      # 10. hydraJobs — for Hydra CI; recursive attrsets of derivations
-      hydraJobs = forAllSystems (system: {
-        hello = nixpkgs.legacyPackages.${system}.hello;
-      });
+      # 10. hydraJobs — Hydra CI (recursive attrsets, leaves are derivations)
+      hydraJobs.${system}.hello = pkgs.hello;
 
-      # 11. legacyPackages — like packages, but unvalidated per-attribute
-      legacyPackages = forAllSystems (system: nixpkgs.legacyPackages.${system});
+      # 11. legacyPackages — like packages but unvalidated per-attribute
+      legacyPackages.${system} = pkgs;
     };
 }
