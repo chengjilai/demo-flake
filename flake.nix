@@ -35,7 +35,7 @@
         path = ./python-starter;
         description = "Python project";
       };
-      bundlers.${system}.default = drv:
+      bundlers.${system}.foo = drv:
         pkgs.writeText "bundle.txt" "derivation path: ${drv}\n";
       hydraJobs.${system}.a = pkgs.hello;
     };
