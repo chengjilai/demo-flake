@@ -33,22 +33,19 @@
       # 6. overlays — lambda with arg 'final' (or '_')
       overlays.default = final: prev: { };
 
-      # 7. nixosModules — NixOS module (any value)
-      nixosModules.default = { config, lib, pkgs, ... }: { };
-
-      # 8. templates — `nix flake init -t` (needs path + description)
+      # 7. templates — `nix flake init -t` (needs path + description)
       templates.default = {
         path = ./.;
         description = "Demo flake template";
       };
 
-      # 9. bundlers — `nix bundle` (each is a function)
+      # 8. bundlers — `nix bundle` (each is a function)
       bundlers.${system}.default = drv: drv;
 
-      # 10. hydraJobs — Hydra CI (recursive attrsets, leaves are derivations)
+      # 9. hydraJobs — Hydra CI (recursive attrsets, leaves are derivations)
       hydraJobs.${system}.hello = pkgs.hello;
 
-      # 11. legacyPackages — like packages but unvalidated per-attribute
+      # 10. legacyPackages — like packages but unvalidated per-attribute
       legacyPackages.${system} = pkgs;
     };
 }
