@@ -21,6 +21,7 @@
       apps.${system}.a = {
         type = "whatever";
         program = "${pkgs.hello}/bin/hello";
+        meta.description = "an arbitrary description string";
       };
 
       # ▲ 'checks', 'x86_64-linux' required.
