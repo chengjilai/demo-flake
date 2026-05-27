@@ -1,8 +1,11 @@
 {
   description = "whatever to describe this flake";
-  inputs.nixpkgs.url = "git+ssh://git@github.com/NixOS/nixpkgs.git?ref=nixos-unstable";
+  inputs = {
+    nixpkgs.url = "git+ssh://git@github.com/NixOS/nixpkgs.git?ref=nixos-unstable";
+    nixbundlers.url = "github:NixOS/bundlers";
+  };
   outputs =
-    { nixpkgs, ... }:
+    { nixpkgs, nixbundlers, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -29,13 +32,11 @@
       };
       formatter.${system} = pkgs.nixfmt-tree;
       overlays.a = final: prev: { };
-      # ▲ inside: 'path' and 'description' keys are required.
-      # ▼ their values are arbitrary.
       templates.a = {
         path = ./python-starter;
-        description = "A minimal Python project";
+        description = "Python project";
       };
-      bundlers.${system}.a = drv: drv;
+      bundlers.${system}.a = nixbundlers.bundlers.${system}.toBuildDerivation;
       hydraJobs.${system}.a = pkgs.hello;
     };
 }
