@@ -1,7 +1,7 @@
 {
   description = "Demo flake demonstrating all standard validated output attributes";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "git+ssh://git@github.com/NixOS/nixpkgs.git?ref=nixos-unstable";
 
   outputs = { self, nixpkgs }:
     let
