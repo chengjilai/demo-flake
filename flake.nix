@@ -1,7 +1,8 @@
 {
   description = "whatever to describe this flake";
   inputs.nixpkgs.url = "git+ssh://git@github.com/NixOS/nixpkgs.git?ref=nixos-unstable";
-  outputs = { nixpkgs, ... }:
+  outputs =
+    { nixpkgs, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -15,21 +16,24 @@
       };
       checks.${system}.a = pkgs.hello;
       devShells.${system}.a = pkgs.mkShellNoCC {
-        name = "a";
-        packages = [ pkgs.hello pkgs.fish ];
+        packages = [
+          pkgs.hello
+          pkgs.fish
+          pkgs.python3
+        ];
         inputsFrom = [ ];
         shellHook = ''
           exec fish
         '';
         FOO = "bar";
       };
-      formatter.${system} = pkgs.hello;
+      formatter.${system} = pkgs.nixfmt-tree;
       overlays.a = final: prev: { };
       # ▲ inside: 'path' and 'description' keys are required.
       # ▼ their values are arbitrary.
       templates.a = {
-        path = ./.;
-        description = "...";
+        path = ./python-starter;
+        description = "A minimal Python project";
       };
       bundlers.${system}.a = drv: drv;
       hydraJobs.${system}.a = pkgs.hello;
