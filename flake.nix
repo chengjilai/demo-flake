@@ -10,33 +10,32 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-      packages.${system}.a = pkgs.hello;
-      apps.${system}.a = {
-        type = "whatever";
-        program = "${pkgs.hello}/bin/hello";
-        meta.description = "an arbitrary description string";
-      };
+      # packages.${system}.a = pkgs.hello;
+      # apps.${system}.a = {
+      #   type = "whatever";
+      #   program = "${pkgs.hello}/bin/hello";
+      #   meta.description = "an arbitrary description string";
+      # };
       checks.${system}.a = pkgs.hello;
       devShells.${system}.a = pkgs.mkShellNoCC {
         packages = [
-          pkgs.hello
           pkgs.fish
           pkgs.python3
         ];
-        inputsFrom = [ ];
+        # inputsFrom = [ ];
         shellHook = ''
           exec fish
         '';
-        FOO = "bar";
+        # FOO = "bar";
       };
       formatter.${system} = pkgs.nixfmt-tree;
-      overlays.a = final: prev: { };
-      templates.a = {
-        path = ./python-starter;
-        description = "Python project";
-      };
-      bundlers.${system}.foo = drv:
-        pkgs.writeText "bundle.txt" "derivation path: ${drv}\n";
+      # overlays.a = final: prev: { };
+      # templates.a = {
+      #   path = ./python-starter;
+      #   description = "Python project";
+      # };
+      # bundlers.${system}.foo = drv:
+      #   pkgs.writeText "bundle.txt" "derivation path: ${drv}\n";
       hydraJobs.${system} = {
         # leaves are derivations. attrset nestings are arbitrary groupings.
         foo = pkgs.hello;
