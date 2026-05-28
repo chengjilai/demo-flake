@@ -36,15 +36,5 @@
       # };
       # bundlers.${system}.foo = drv:
       #   pkgs.writeText "bundle.txt" "derivation path: ${drv}\n";
-      hydraJobs.${system} = {
-        # leaves are derivations. attrset nestings are arbitrary groupings.
-        foo = pkgs.hello;
-        bar = {
-          qux = pkgs.hello;
-          quux = {
-            corge = pkgs.hello;
-          };
-        };
-      };
     };
 }
